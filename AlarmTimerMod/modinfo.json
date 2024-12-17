@@ -1,0 +1,14 @@
+{
+  "type": "code",
+  "name": "Alarm Timer",
+  "modid": "alarmtimermod",
+  "version": "0.1.0",
+  "description": "Adds simple alarm timer commands `.tm`",
+  "authors": [
+    "Spoonail"
+  ],
+  "side": "Client",
+  "dependencies": {
+    "game": ""
+  }
+}

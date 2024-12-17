@@ -1,0 +1,12 @@
+Assets/modicon.apd
+Assets/modicon.png
+AlarmTimerMod/modicon.png
+        Open Clip Art
+        https://openclipart.org/search/
+        CC0 1.0
+
+Assets/sounds/maou_se_jingle04.ogg
+AlarmTimerMod/assets/alarmtimermod/sounds/maou_se_jingle04.ogg
+        (c) MaouDamashii
+        https://maou.audio
+        CC BY 4.0
