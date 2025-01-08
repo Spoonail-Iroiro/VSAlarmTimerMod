@@ -2,8 +2,8 @@
   "type": "code",
   "name": "Alarm Timer",
   "modid": "alarmtimermod",
-  "version": "0.1.0",
-  "description": "Adds simple alarm timer commands `.tm`",
+  "version": "0.1.2",
+  "description": "Adds simple alarm timer command `.tm`",
   "authors": [
     "Spoonail"
   ],
