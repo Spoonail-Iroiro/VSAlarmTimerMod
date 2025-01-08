@@ -28,6 +28,10 @@ namespace AlarmTimerMod {
 
         internal TimerController TimerController { get; private set; }
 
+        public override bool ShouldLoad(EnumAppSide forSide) {
+            return forSide.IsClient();
+        }
+
         public override void StartClientSide(ICoreClientAPI api) {
             capi = api;
 
@@ -45,7 +49,7 @@ namespace AlarmTimerMod {
 
             var rootCommand = api.ChatCommands
                 .Create(Config.rootCommandName)
-                .WithDescription("Alarm timer")
+                .WithDescription(TrUtil.Tr("desc-tm"))
                 .RequiresPlayer()
                 .RequiresPrivilege(Privilege.chat)
                 .HandleWith(args => {
@@ -55,12 +59,28 @@ namespace AlarmTimerMod {
 
             var parsers = api.ChatCommands.Parsers;
 
+            var startCommand = rootCommand
+                .BeginSubCommand("start")
+                .WithAlias("s")
+                .WithDescription(TrUtil.Tr("desc-tm-start"))
+                .WithArgs(parsers.Int("duration_in_second"), parsers.All("message"))
+                .HandleWith(args => {
+                    var seconds = (int)args.Parsers[0].GetValue();
+                    var message = args.Parsers[1].GetValue() as string;
+
+                    TimerController.StartTimer(seconds, message);
+
+                    return TextCommandResult.Success($"Timer started. It will notify you in {seconds} seconds");
+                });
+
             var presetCommand = rootCommand
                 .BeginSubCommand("preset")
+                .WithDescription(TrUtil.Tr("desc-tm-preset"))
                 .WithAlias("p");
             var presetAddCommand = presetCommand
                 .BeginSubCommand("add")
                 .WithAlias("a")
+                .WithDescription(TrUtil.Tr("desc-tm-preset-add"))
                 .WithArgs(parsers.Word("name"), parsers.Int("duration_in_second"), parsers.All("message")) // To allow spaces in an argument, it should be parser.All and located end of the arguments
                 .HandleWith(args => {
                     var name = args.Parsers[0].GetValue() as string;
@@ -78,6 +98,7 @@ namespace AlarmTimerMod {
             var presetListCommand = presetCommand
                 .BeginSubCommand("list")
                 .WithAlias("l")
+                .WithDescription("Lists all existing presets")
                 .HandleWith(args => {
                     var result = timerPresetAccessor.GetListDescription();
                     return TextCommandResult.Success(result);
@@ -85,6 +106,7 @@ namespace AlarmTimerMod {
             var presetDeleteCommand = presetCommand
                 .BeginSubCommand("delete")
                 .WithAlias("d")
+                .WithDescription(TrUtil.Tr("desc-tm-preset-delete"))
                 .WithArgs(parsers.Word("name"))
                 .HandleWith(args => {
                     var name = args.Parsers[0].GetValue() as string;
@@ -100,7 +122,8 @@ namespace AlarmTimerMod {
             var presetUpdateDurationCommand = presetCommand
                 .BeginSubCommand("update-duration")
                 .WithAlias("ud")
-                .WithArgs(parsers.Word("name"), parsers.Int("duration_in_second"))
+                .WithDescription(TrUtil.Tr("desc-tm-preset-updateduration"))
+                .WithArgs(parsers.Word("name"), parsers.Int("new_duration_in_second"))
                 .HandleWith(args => {
                     var name = args.Parsers[0].GetValue() as string;
                     var seconds = (int)args.Parsers[1].GetValue();
@@ -118,22 +141,10 @@ namespace AlarmTimerMod {
                     return TextCommandResult.Success($"Updated preset '{name}'");
                 });
 
-            var startCommand = rootCommand
-                .BeginSubCommand("start")
-                .WithAlias("s")
-                .WithArgs(parsers.Int("duration_in_second"), parsers.All("message"))
-                .HandleWith(args => {
-                    var seconds = (int)args.Parsers[0].GetValue();
-                    var message = args.Parsers[1].GetValue() as string;
-
-                    TimerController.StartTimer(seconds, message);
-
-                    return TextCommandResult.Success($"Timer started. It will notify you in {seconds} seconds");
-                });
-
             var startPresetCommand = rootCommand
                 .BeginSubCommand("start-preset")
                 .WithAlias("sp")
+                .WithDescription(TrUtil.Tr("desc-tm-startpreset"))
                 .WithArgs(parsers.OptionalWord("name"))
                 .HandleWith(args => {
                     var name = args.Parsers[0].GetValue() as string;
@@ -158,6 +169,7 @@ namespace AlarmTimerMod {
 
             var undoCommand = rootCommand
                 .BeginSubCommand("undo")
+                .WithDescription(TrUtil.Tr("desc-tm-undo"))
                 .HandleWith(args => {
                     var canceled = TimerController.CancelLastTimer();
 
@@ -170,6 +182,7 @@ namespace AlarmTimerMod {
 
             var volumeCommand = rootCommand
                 .BeginSubCommand("volume")
+                .WithDescription(TrUtil.Tr("desc-tm-volume"))
                 .WithArgs(parsers.Double("volume"))
                 .HandleWith(args => {
                     var volume = (double)args.Parsers[0].GetValue();

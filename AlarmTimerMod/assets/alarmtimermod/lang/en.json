@@ -1,3 +1,11 @@
 {
-    "hello": "hello world!"
+  "desc-tm": "Simple alarm timer",
+  "desc-tm-preset": "Commands for timer preset management",
+  "desc-tm-preset-add": "Adds a new timer preset",
+  "desc-tm-preset-delete": "Deletes the preset",
+  "desc-tm-preset-updateduration": "Updates the duration of the preset",
+  "desc-tm-start": "Starts a timer with the specified duration and message",
+  "desc-tm-startpreset": "Starts a timer with the preset values",
+  "desc-tm-undo": "Cancels the most recently started timer",
+  "desc-tm-volume": "Sets the alarm volume. Accepts 0.0-1.0 (default: 1.0)"
 }
